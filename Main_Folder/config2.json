@@ -1,0 +1,30 @@
+{
+    "red_light_line":  {
+        "red_line_start": {
+            "x": -1,
+            "y": 347
+        },
+        "red_line_end": {
+            "x": 421,
+            "y": 347
+        }
+    },
+    "speed_test_line": {
+        "green_line_start": {
+            "x": 215,
+            "y": 183
+        },
+        "green_line_end": {
+            "x": 732,
+            "y": 183
+        },
+        "blue_line_start": {
+            "x": 23,
+            "y": 255
+        },
+        "blue_line_end": {
+            "x": 900,
+            "y": 255
+        }
+    }
+}

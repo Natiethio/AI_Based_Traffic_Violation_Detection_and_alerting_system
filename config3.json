@@ -1,0 +1,20 @@
+{
+    "speed_test_line": {
+        "red_line_start": {
+            "x": 187,
+            "y": 268
+        },
+        "red_line_end": {
+            "x": 799,
+            "y": 268
+        },
+        "blue_line_start": {
+            "x": 70,
+            "y": 338
+        },
+        "blue_line_end": {
+            "x": 965,
+            "y": 338
+        }
+    }
+}
