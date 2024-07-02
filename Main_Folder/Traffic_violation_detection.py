@@ -165,8 +165,9 @@ while cap.isOpened():
                         current_time = datetime.datetime.now()
                         formatted_time = current_time.strftime("%Y_%m_%d_%H_%M_%S")
                         frame_filename = f'detected_frames/{id}_{formatted_time}.jpg'
+                        frame_filename2 = f'Violations/{id}_{formatted_time}_s.jpg'
                         cv2.imwrite(frame_filename, frame)
-
+                        cv2.imwrite(frame_filename2, frame)
                         # frame_filename = f'detected_frames/{id}.jpg'
                         # cv2.imwrite(frame_filename, frame)
 
@@ -192,7 +193,9 @@ while cap.isOpened():
                         current_time = datetime.datetime.now()
                         formatted_time = current_time.strftime("%Y_%m_%d_%H_%M_%S")
                         frame_filename = f'detected_frames/{id}_{formatted_time}.jpg'
+                        frame_filename2 = f'Violations/{id}_{formatted_time}_s.jpg'
                         cv2.imwrite(frame_filename, frame)
+                        cv2.imwrite(frame_filename2, frame)
 
                         # frame_filename = f'detected_frames/{id}.jpg'
                         # cv2.imwrite(frame_filename, frame)
@@ -211,7 +214,9 @@ while cap.isOpened():
                   current_time = datetime.datetime.now()
                   formatted_time = current_time.strftime("%Y_%m_%d_%H_%M_%S")
                   frame_filename = f'Red_lineviolated_cars/{id}_{formatted_time}.jpg'
+                  frame_filename2 = f'Violations/{id}_{formatted_time}_r.jpg'
                   cv2.imwrite(frame_filename, frame)
+                  cv2.imwrite(frame_filename2, frame)
 
                 #   frame_filename = f'Red_lineviolated_cars/{id}.jpg'
                 #   cv2.imwrite(frame_filename, frame)
@@ -221,6 +226,7 @@ while cap.isOpened():
     cv2.putText(frame, ('Green Line'), (green_line_start_x, green_line_start_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1, cv2.LINE_AA)
     cv2.line(frame, (blue_line_start_x, blue_line_start_y), (blue_line_end_x, blue_line_start_y), blue_color, 1)
     cv2.putText(frame, ('Blue Line'), (blue_line_start_x + 10, blue_line_start_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1, cv2.LINE_AA)
+    
 
     cv2.line(frame, (red_line_start_x, red_line_start_y), (red_line_end_x, red_line_start_y), current_red_color, 1)
     cv2.putText(frame, ('Light Status'), (10, red_line_start_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1, cv2.LINE_AA)

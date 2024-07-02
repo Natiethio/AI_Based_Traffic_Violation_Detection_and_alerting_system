@@ -34,9 +34,15 @@ class TrafficConfigGUI:
     def create_widgets(self):
         self.red_light_frame = self.create_section_frame("Red Light Line", 0)
         self.create_red_light_entries(self.red_light_frame)
+
         self.speed_test_frame = self.create_section_frame("Speed Test Line", 1)
         self.create_speed_test_entries(self.speed_test_frame)
+        
+        self.lane_frame = self.create_section_frame("Lanes", 3)
+        self.create_lane_entries(self.lane_frame)
+
         self.create_buttons()
+
         self.status = tk.Label(self.scrollable_frame.scrollable_frame, text="")
         self.status.grid(row=5, column=0, columnspan=2, pady=10)
 
@@ -60,6 +66,14 @@ class TrafficConfigGUI:
         self.blue_line_start_y = self.create_entry(frame, "Blue Line Start Y:", 2, 1)
         self.blue_line_end_x = self.create_entry(frame, "Blue Line End X:", 3, 0)
         self.blue_line_end_y = self.create_entry(frame, "Blue Line End Y:", 3, 1)
+
+    def create_lane_entries(self, frame):
+        self.lane_count_value = self.create_entry(frame, "Number of Lanes:", 0, 0, columnspan=2)
+        self.lanes = []
+        self.add_lane_button = tk.Button(frame, text="Add Lane", command=self.add_lane)
+        self.add_lane_button.grid(row=1, column=0, pady=5)
+        self.remove_lane_button = tk.Button(frame, text="Remove Lane", command=self.remove_lane)
+        self.remove_lane_button.grid(row=1, column=1, pady=5)
 
     def create_entry(self, frame, label_text, row, column, columnspan=1):
         label = tk.Label(frame, text=label_text)
@@ -100,19 +114,57 @@ class TrafficConfigGUI:
             self.blue_line_end_x.insert(0, self.data["speed_test_line"]["blue_line_end"]["x"])
             self.blue_line_end_y.insert(0, self.data["speed_test_line"]["blue_line_end"]["y"])
 
+            self.lane_count_value.insert(0, self.data["lane"]["number_of_lanes"])
+            self.populate_lanes(self.data["lane"]["lanes"])
+
     def clear_entries(self):
         self.red_line_start_x.delete(0, tk.END)
         self.red_line_start_y.delete(0, tk.END)
         self.red_line_end_x.delete(0, tk.END)
         self.red_line_end_y.delete(0, tk.END)
+
         self.green_line_start_x.delete(0, tk.END)
         self.green_line_start_y.delete(0, tk.END)
         self.green_line_end_x.delete(0, tk.END)
         self.green_line_end_y.delete(0, tk.END)
+
         self.blue_line_start_x.delete(0, tk.END)
         self.blue_line_start_y.delete(0, tk.END)
         self.blue_line_end_x.delete(0, tk.END)
         self.blue_line_end_y.delete(0, tk.END)
+
+        self.lane_count_value.delete(0, tk.END)
+
+        for lane in self.lanes:
+            lane[0].destroy()
+            lane[1].destroy()
+        self.lanes.clear()
+
+    def populate_lanes(self, lanes):
+        for lane in lanes:
+            self.add_lane()
+            self.lanes[-1][0].insert(0, lane["lane_start"]["x"])
+            self.lanes[-1][1].insert(0, lane["lane_start"]["y"])
+            self.lanes[-1][2].insert(0, lane["lane_end"]["x"])
+            self.lanes[-1][3].insert(0, lane["lane_end"]["y"])
+
+    def add_lane(self):
+        frame = tk.Frame(self.lane_frame)
+        frame.grid(row=len(self.lanes) + 2, column=0, columnspan=2, pady=5, sticky="ew")
+        lane_start_x = self.create_entry(frame, "Start X:", 0, 0)
+        lane_start_y = self.create_entry(frame, "Start Y:", 0, 1)
+        lane_end_x = self.create_entry(frame, "End X:", 1, 0)
+        lane_end_y = self.create_entry(frame, "End Y:", 1, 1)
+        self.lanes.append((lane_start_x, lane_start_y, lane_end_x, lane_end_y))
+
+    def remove_lane(self):
+        if self.lanes:
+            lane = self.lanes.pop()
+            lane[0].destroy()
+            lane[1].destroy()
+            lane[2].destroy()
+            lane[3].destroy()
+
 
     def save_json(self):
         self.data = {
@@ -126,8 +178,18 @@ class TrafficConfigGUI:
                 "blue_line_start": {"x": int(self.blue_line_start_x.get()), "y": int(self.blue_line_start_y.get())},
                 "blue_line_end": {"x": int(self.blue_line_end_x.get()), "y": int(self.blue_line_end_y.get())}
             },
+            "lane": {
+                "number_of_lanes": self.lane_count_value.get(),
+                "lanes": [
+                    {
+                        "lane_start": {"x": lane[0].get(), "y": lane[1].get()},
+                        "lane_end": {"x": lane[2].get(), "y": lane[3].get()}
+                    } for lane in self.lanes
+                ]
+            }
 
         }
+
         file_path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")])
         if file_path:
             with open(file_path, 'w') as file:
