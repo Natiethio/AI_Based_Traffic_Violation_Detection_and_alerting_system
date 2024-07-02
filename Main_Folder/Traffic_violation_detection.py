@@ -52,7 +52,8 @@ with open('light_status.json', 'r') as filelight:
 light_status = configlight["light_status"]
 
 # Load line configuration
-config_file_path = 'config2.json'
+config_file_path = 'configtest.json'
+# config_file_path = 'config2.json'
 last_modified_time = os.path.getmtime(config_file_path)
 with open(config_file_path, 'r') as file:
     config = json.load(file)
@@ -85,7 +86,11 @@ def update_lines(config):
     red_line_start_y = config["red_light_line"]["red_line_start"]["y"]
     red_line_end_x = config["red_light_line"]["red_line_end"]["x"]
     red_line_end_y = config["red_light_line"]["red_line_end"]["y"]
-   
+    
+    # lane_start_x = config["red_light_line"]["red_line_start"]["x"]
+    # lane_start_y = config["red_light_line"]["red_line_start"]["y"]
+    # lane_end_x = config["red_light_line"]["red_line_end"]["x"]
+    # lane_end_y = config["red_light_line"]["red_line_end"]["y"]
 
 update_lines(config)
 
@@ -226,10 +231,18 @@ while cap.isOpened():
     cv2.putText(frame, ('Green Line'), (green_line_start_x, green_line_start_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1, cv2.LINE_AA)
     cv2.line(frame, (blue_line_start_x, blue_line_start_y), (blue_line_end_x, blue_line_start_y), blue_color, 1)
     cv2.putText(frame, ('Blue Line'), (blue_line_start_x + 10, blue_line_start_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1, cv2.LINE_AA)
-    
+
 
     cv2.line(frame, (red_line_start_x, red_line_start_y), (red_line_end_x, red_line_start_y), current_red_color, 1)
     cv2.putText(frame, ('Light Status'), (10, red_line_start_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1, cv2.LINE_AA)
+
+    for lane in config["lane"]["lanes"]:
+      lane_start_x = lane["lane_start"]["x"]
+      lane_start_y = lane["lane_start"]["y"]
+      lane_end_x = lane["lane_end"]["x"]
+      lane_end_y = lane["lane_end"]["y"]
+      cv2.line(frame, (lane_start_x, lane_start_y), (lane_end_x, lane_end_y), yellow_color, 1)
+      cv2.putText(frame, 'Lane', (lane_start_x, lane_start_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1, cv2.LINE_AA)
 
     cv2.rectangle(frame, (10, 10), (260, 40), counter_bg_color, -1)
     cv2.putText(frame, ('Going Down - ' + str(len(counter_down))), (15, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, text_colorcounter, 2, cv2.LINE_AA)

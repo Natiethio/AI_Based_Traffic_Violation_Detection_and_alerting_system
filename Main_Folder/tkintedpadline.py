@@ -182,8 +182,8 @@ class TrafficConfigGUI:
                 "number_of_lanes": self.lane_count_value.get(),
                 "lanes": [
                     {
-                        "lane_start": {"x": lane[0].get(), "y": lane[1].get()},
-                        "lane_end": {"x": lane[2].get(), "y": lane[3].get()}
+                        "lane_start": {"x": int(lane[0].get()), "y": int(lane[1].get())},
+                        "lane_end": {"x": int(lane[2].get()), "y": int(lane[3].get())}
                     } for lane in self.lanes
                 ]
             }
