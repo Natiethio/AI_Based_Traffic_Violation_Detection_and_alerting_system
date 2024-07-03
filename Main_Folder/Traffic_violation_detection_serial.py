@@ -27,6 +27,9 @@ count = 0
 
 down = {}  # store all cars touching the red line and the locations
 up = {}
+overspeed = {}
+violatered = {}
+violatelane = {}
 counter_down = []  # stores id of all vehicles touching the red line first then the blue line
 counter_up = []  # stores id of all vehicles touching the blue line first then the red line
 
@@ -175,7 +178,9 @@ while cap.isOpened():
                         current_time = datetime.datetime.now()
                         formatted_time = current_time.strftime("%Y_%m_%d_%H_%M_%S")
                         frame_filename = f'detected_frames/{id}_{formatted_time}.jpg'
+                        frame_filename2 = f'Violations/{id}_{formatted_time}_s.jpg'
                         cv2.imwrite(frame_filename, frame)
+                        cv2.imwrite(frame_filename2, frame)
 
                         # frame_filename = f'detected_frames/{id}.jpg'
                         # cv2.imwrite(frame_filename, frame)
@@ -202,7 +207,9 @@ while cap.isOpened():
                         current_time = datetime.datetime.now()
                         formatted_time = current_time.strftime("%Y_%m_%d_%H_%M_%S")
                         frame_filename = f'detected_frames/{id}_{formatted_time}.jpg'
+                        frame_filename2 = f'Violations/{id}_{formatted_time}_s.jpg'
                         cv2.imwrite(frame_filename, frame)
+                        cv2.imwrite(frame_filename2, frame)
 
                         # frame_filename = f'detected_frames/{id}.jpg'
                         # cv2.imwrite(frame_filename, frame)
@@ -221,10 +228,38 @@ while cap.isOpened():
                     current_time = datetime.datetime.now()
                     formatted_time = current_time.strftime("%Y_%m_%d_%H_%M_%S")
                     frame_filename = f'Red_lineviolated_cars/{id}_{formatted_time}.jpg'
+                    frame_filename2 = f'Violations/{id}_{formatted_time}_r.jpg'
                     cv2.imwrite(frame_filename, frame)
-
+                    cv2.imwrite(frame_filename2, frame)
                     # frame_filename = f'Red_lineviolated_cars/{id}.jpg'
                     # cv2.imwrite(frame_filename, frame)
+
+        for lane in config['lane']['lanes']:
+            lane_start_x = int(lane['lane_start']['x'])
+            lane_start_y = int(lane['lane_start']['y'])
+            lane_end_x = int(lane['lane_end']['x'])
+            lane_end_y = int(lane['lane_end']['y'])
+
+          
+            # Check if the car's center crosses the lane line
+            if lane_start_x <= cx <= lane_end_x and lane_start_y  <= cy <= lane_end_y :
+                cv2.circle(frame, (cx, cy), 4, yellow_color, -1)
+                cv2.rectangle(frame, (x3, y3), (x4, y4), yellow_color, 2)
+                (w, h), _ = cv2.getTextSize('Lane Violation', cv2.FONT_HERSHEY_COMPLEX, 0.8, 2)
+                cv2.rectangle(frame, (x4, y4 - h - 10), (x4 + w, y4), yellow_color, -1)
+                cv2.putText(frame, 'Lane Violation', (x4, y4 - 5), cv2.FONT_HERSHEY_COMPLEX, 0.8, text_color, 2, cv2.LINE_AA)
+                current_time = datetime.datetime.now()
+                formatted_time = current_time.strftime("%Y_%m_%d_%H_%M_%S")
+                frame_filename = f'Violations/{id}_{formatted_time}_l.jpg'
+                cv2.imwrite(frame_filename, frame)
+
+        for lane in config["lane"]["lanes"]:
+            lane_start_x = lane["lane_start"]["x"]
+            lane_start_y = lane["lane_start"]["y"]
+            lane_end_x = lane["lane_end"]["x"]
+            lane_end_y = lane["lane_end"]["y"]
+            cv2.line(frame, (lane_start_x, lane_start_y), (lane_end_x, lane_end_y), yellow_color, 1)
+            cv2.putText(frame, 'Lane', (lane_start_x, lane_start_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1, cv2.LINE_AA)
 
     cv2.line(frame, (green_line_start_x, green_line_start_y), (green_line_end_x, green_line_start_y), green_color, 1)
     cv2.putText(frame, ('Green Line'), (green_line_start_x, green_line_start_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1, cv2.LINE_AA)
